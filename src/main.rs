@@ -380,3 +380,71 @@ fn clone_data() {
     println!("Variable a: {}", a);
     println!("Variable b: {}", b);
 }
+
+#[test]
+fn if_expression() {
+    let a = 6;
+    if a >= 8 {
+        println!("Good");
+    } else if a >= 6 {
+        println!("Not bad");
+    } else {
+        println!("Try again");
+    }
+
+    // Let statement
+    let c = 7;
+    let result: &str = if c >= 8 {
+        "Good"
+    } else if c >= 6 {
+        "Not bad"
+    } else {
+        "Try again"
+    };
+    println!("Result: {}", result);
+}
+
+#[test]
+fn loop_expression() {
+    let mut a = 0;
+    loop {
+        a += 1;
+        if a == 5 {
+            continue;
+        }
+        println!("Loop: {}", a);
+
+        if a >= 10 {
+            break;
+        }
+    }
+
+    // return value from loop
+    let mut a = 0;
+    let result = loop {
+        a += 1;
+        if a == 10 {
+            break a * 2; // return value from loop
+        }
+    };
+    println!("Result: {}", result);
+
+    // loop label
+    let mut number: i32 = 1;
+    'outer: loop { // label 'outer'
+        let mut x = 1;
+        loop {
+            if number == 11 {
+                break 'outer;
+            }
+
+            println!("{} x {} = {}", number, x, number * x);
+
+            x += 1;
+            if x == 11 {
+                break;
+            }
+        }
+        number += 1;
+    }
+}
