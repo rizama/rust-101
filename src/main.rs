@@ -431,7 +431,8 @@ fn loop_expression() {
 
     // loop label
     let mut number: i32 = 1;
-    'outer: loop { // label 'outer'
+    'outer: loop {
+        // label 'outer'
         let mut x = 1;
         loop {
             if number == 11 {
@@ -446,5 +447,61 @@ fn loop_expression() {
             }
         }
         number += 1;
+    }
+}
+
+#[test]
+fn while_expression() {
+    let mut a = 0;
+    while a < 10 {
+        println!("While: {}", a);
+        a += 1;
+    }
+}
+
+#[test]
+fn iterate_array() {
+    // manual
+    let z: [i32; 5] = [1, 2, 3, 4, 5];
+    let mut index = 0;
+    while index < z.len() {
+        println!("Element: {}", z[index]);
+        index += 1;
+    }
+
+    // for in
+    let a = [1, 2, 3, 4, 5];
+    for element in a {
+        println!("Element: {}", element);
+    }
+
+    // iterate array of object
+    let a = [1, 2, 3, 4, 5];
+    for element in a.iter() {
+        println!("Element: {}", element);
+    }
+}
+
+#[test]
+fn range_expression() {
+    // for range
+    let range = 0..5;
+    println!("Start Range: {:?}", range.start); // index include
+    println!("End Range: {:?}", range.end); // index exclude
+    for i in 0..5 {
+        println!("Range exclude end: {}", i);
+    }
+
+    // range include
+    let range_include = 0..=5;
+    println!("Start Range include: {:?}", range_include.start()); // index include
+    println!("End Range include: {:?}", range_include.end()); // index include
+    for i in range_include {
+        println!("Range include end: {}", i);
+    }
+
+    // for range with step
+    for i in (0..5).step_by(2) {
+        println!("Range with step: {}", i);
     }
 }
