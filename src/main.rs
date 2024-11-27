@@ -505,3 +505,187 @@ fn range_expression() {
         println!("Range with step: {}", i);
     }
 }
+
+// FUNCTION
+
+fn say_hello() {
+    println!("Hello");
+}
+
+fn say_hello_to(name: &str, age: i32) {
+    println!("Hello {} and age {}", name, age);
+}
+
+fn sum(a: i32, b: i32) -> i32 {
+    // return value
+    a + b
+}
+
+fn factorial_loop(n: i64) -> i64 {
+    if n < 0 {
+        return 0;
+    }
+
+    let mut result = 1;
+    for i in 1..=n {
+        result *= i;
+    }
+
+    // return result;
+    // or just call result
+    // code in the last line will be returned
+    result
+}
+
+fn print_text(value: String, times: i32) {
+    if times <= 0 {
+        return;
+    }
+
+    println!("{}", value);
+
+    print_text(value, times - 1);
+}
+
+fn recursive_factorial_loop(n: u32) -> u32 {
+    if n == 0 {
+        return 1;
+    }
+
+    n * recursive_factorial_loop(n - 1)
+}
+
+#[test]
+fn feature_function() {
+    say_hello();
+    say_hello_to("Rizky", 29);
+    println!("Sum: {}", sum(1, 2));
+    println!("Factorial loop: {}", factorial_loop(5));
+    print_text(String::from("SAM"), 5);
+    println!("Recursive factorial loop: {}", recursive_factorial_loop(5));
+}
+
+fn print_number(n: i32) {
+    println!("Number + 1: {}", n + 1);
+}
+
+fn hi(name: String) {
+    println!("Hi {}", name);
+}
+
+fn full_name(first_name: String, last_name: String) -> String {
+    // if return type is String (or other type saved in heap), the value will be moved to the caller
+    // if return type is &str (or other type saved in stack), the value will be copied to the caller
+
+    // in this case, the value of this function will be moved to the caller, called'name'
+    format!("{} {}", first_name, last_name)
+}
+
+fn full_name_bring_back_ownership(
+    first_name: String,
+    last_name: String,
+) -> (String, String, String) {
+    let full_name = format!("{} {}", first_name, last_name);
+
+    // bring back ownership to the caller
+    (first_name, last_name, full_name)
+}
+
+#[test]
+fn function_ownership() {
+    // for data type fixed size (saved in stack), the value will be copied to the parameter
+    let a = 10;
+    print_number(a);
+    println!("Number a: {}", a);
+
+    // for data type dynamic size (saved in heap), the value will be moved to the parameter
+    // and the original value will be invalidated
+    let name = String::from("Rizky");
+    hi(name);
+    // println!("Name: {}", name); // this will cause an error
+
+    // return value ownership
+    let first_name = String::from("Rizky");
+    let last_name = String::from("Sam");
+    let name = full_name(first_name, last_name); // value first_name and last_name will be moved to the parameter of the full_name function
+    println!("Full name: {}", name);
+
+    // println!("First name: {}", first_name); // this will cause an error, because the value of first_name has been moved to the parameter of the full_name function
+    // println!("Last name: {}", last_name); // this will cause an error, because the value of last_name has been moved to the parameter of the full_name function
+
+    // returning ownership
+    let f_name = String::from("Sam");
+    let l_name = String::from("Pratama");
+
+    // the function will return ownership to the caller
+    let (f_name, l_name, full_name) = full_name_bring_back_ownership(f_name, l_name);
+    println!("Full name: {}", full_name);
+    println!("First name: {}", f_name);
+    println!("Last name: {}", l_name);
+}
+
+fn full_name_with_reference(first_name: &mut String, last_name: &String) -> String {
+    // we can update the value of first_name, because it's a mutable reference
+    // *first_name  = String::from("Ariel");
+    first_name.push_str(" Ariel");
+
+    format!("{} {}", first_name, last_name)
+}
+
+#[test]
+fn function_reference() {
+    let mut a = 10;
+    let b = &mut a;
+    *b = 1;
+    println!("Variable b: {}", b);
+
+    let mut first_name = String::from("Rizky");
+    let last_name = String::from("Sam");
+
+    // with mutable reference
+    // if we want to change the value of first_name, we need to use mutable reference
+    let full_name = full_name_with_reference(&mut first_name, &last_name);
+
+    println!("Full name: {}", full_name);
+    println!("First name: {}", first_name);
+    println!("Last name: {}", last_name);
+
+    // mutable reference only can be used once
+    // if we want to use mutable reference again, we need to declare it again
+    let mut value = String::from("Rizky");
+    let borrow_value = &mut value;
+    // let borrow_value2 = &mut value; // this will cause an error
+    println!("Borrow value: {}", borrow_value);
+
+    // Rules of references
+    // You can have either:
+    //     One mutable reference (&mut T)
+    //     OR any number of immutable references (&T)
+    //     But never both at the same time
+    let mut value2 = String::from("Sam");
+    let borrow_value3 = &mut value2;
+    // let borrow_value4 = &value2; // this will cause an error
+    println!("Borrow value2: {}", borrow_value3);
+}
+
+// dangling pointer
+// ref: https://doc.rust-lang.org/book/ch04-03-dangling-pointers.html
+#[test]
+fn dangling_pointer() {
+    println!("Dangling pointer: {}", dangle());
+}
+
+// this function will return a reference to a String that is local to the function
+// but this will cause a dangling pointer error, because the String will be dropped when the function ends
+// and the reference will point to an invalid memory location
+// so we cant return a reference
+// fn dangle() -> &String {
+//     let s = String::from("hello");
+//     &s
+// }
+
+// solution for dangling pointer
+fn dangle() -> String {
+    let s = String::from("hello");
+    s // Return the String itself, transferring ownership
+}
