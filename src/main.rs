@@ -689,3 +689,23 @@ fn dangle() -> String {
     let s = String::from("hello");
     s // Return the String itself, transferring ownership
 }
+
+#[test]
+fn range_reference() {
+    let a: [i32; 10] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let slice: &[i32] = &a[1..3];
+    println!("Slice: {:?}", slice);
+
+    let slice2 = &a[..3];
+    println!("Slice2: {:?}", slice2);
+
+    let slice3 = &a[..];
+    println!("Slice3: {:?}", slice3);
+
+    let slice4 = &a[1..];
+    println!("Slice4: {:?}", slice4);
+
+    let slice5 = &a[..=3];
+    println!("Slice5: {:?}", slice5);
+}
+
