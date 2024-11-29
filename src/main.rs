@@ -709,3 +709,123 @@ fn range_reference() {
     println!("Slice5: {:?}", slice5);
 }
 
+#[test]
+fn string_slice() {
+    let a = String::from("Rizky Sam Pratama");
+
+    let first = &a[0..5];
+    println!("First: {}", first);
+
+    let last = &a[10..];
+    println!("Last: {}", last);
+}
+
+#[derive(Debug)]
+struct Person {
+    name: String,
+    middle_name: String,
+    last_name: String,
+    age: u8,
+}
+
+fn print_person(person: &Person) {
+    println!("Person name: {}", person.name);
+    println!("Person middle name: {}", person.middle_name);
+    println!("Person last name: {}", person.last_name);
+    println!("Person age: {}", person.age);
+}
+
+#[test]
+fn test_struct() {
+    let person: Person = Person {
+        name: String::from("Rizky"),
+        middle_name: String::from("Sam"),
+        last_name: String::from("Pratama"),
+        age: 29,
+    };
+
+    println!("Person: {:#?}", person);
+
+    print_person(&person);
+
+    let persons = vec![
+        Person {
+            name: String::from("John"),
+            middle_name: String::from("William"),
+            last_name: String::from("Doe"),
+            age: 25,
+        },
+        Person {
+            name: String::from("Jane"),
+            middle_name: String::from("Marie"),
+            last_name: String::from("Smith"),
+            age: 30,
+        },
+        Person {
+            name: String::from("Bob"),
+            middle_name: String::from("James"),
+            last_name: String::from("Johnson"),
+            age: 35,
+        },
+    ];
+
+    println!("All persons: {:#?}", persons);
+    println!("1 persons: {:#?}", persons[0]);
+
+    // init shorthand
+    let name = String::from("Rizky 1");
+    let age = 29;
+
+    let sam: Person = Person {
+        name, // shorthand for name: name, ownership is transferred to the struct
+        middle_name: String::from("Sam 1"),
+        last_name: String::from("Pratama 1"),
+        age, // ownership is NOT transferred to the struct, because it's fixed size
+    };
+
+    println!("Person: {:#?}", sam);
+    println!("Person name: {}", age);
+
+    // struct update syntax
+    // this will copy the value of sam -> samsul
+    // but be careful for dinamyc type (String, Vec, etc, who stored in heap)
+    // because the value will be moved to 'samsul'
+    let mut samsul = Person { ..sam };
+
+    samsul.name = String::from("Rizky 3");
+    println!("Person: {:#?}", samsul);
+    println!("Person name: {}", sam.age);
+    // println!("Person middle name: {}", sam.name); // this will cause an error, because the value of sam.name has been moved to samsul
+
+    // solution for dinamyc type (String, Vec, etc, who stored in heap)
+    // we can use clone() method to copy the value
+    let new_sam = Person {
+        name: String::from("Rizky 4"),
+        middle_name: String::from("Sam 4"),
+        last_name: String::from("Pratama 4"),
+        age: 30,
+    };
+    let samsul2 = Person {
+        name: new_sam.name.clone(),
+        middle_name: new_sam.middle_name.clone(),
+        last_name: new_sam.last_name.clone(),
+        ..new_sam
+    };
+
+    print_person(&samsul2);
+    print_person(&new_sam);
+
+    // tuple struct
+    #[derive(Debug)]
+    struct GeoPoint(f64, f64);
+
+    let point = GeoPoint(10.0, 20.0);
+    println!("Point: {:?}", point);
+    println!("Point: {}", point.0);
+    println!("Point: {}", point.1);
+
+    // struct without field names
+    struct Nothing;
+    let _nothing = Nothing;
+    let _nothing2 = Nothing {};
+}
