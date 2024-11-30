@@ -829,3 +829,61 @@ fn test_struct() {
     let _nothing = Nothing;
     let _nothing2 = Nothing {};
 }
+
+// Method struct
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    // created method always have &self as first parameter
+    // &self is a reference to the instance of the struct
+    // this method means that the method will be called on the instance of the struct
+    // if self is not reference, the ownership of the instance will be moved to the method (for type who stored in heap)
+    // in this case, rect instance will be moved to the method
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+
+    fn print_name_shape(&self, name: &String) {
+        println!("Shape name: {}", name);
+    }
+}
+
+#[test]
+fn test_method_struct() {
+    let rect = Rectangle {
+        height: 10,
+        width: 20,
+    };
+
+    println!("Rectangle area: {}", rect.area());
+
+    println!("Rectangle: {}", rect.height); // this will cause an error, because the value of rect has been moved to the method
+
+    let name = String::from("Rectangle");
+    rect.print_name_shape(&name);
+}
+
+// Associated functions
+// associated functions are functions that are associated with the struct
+// but not with the instance of the struct
+// associated functions are defined using the impl keyword
+// associated functions are called using the struct name and the :: operator
+// associated functions are often used for constructors
+
+struct GeoPoint(f64, f64);
+
+impl GeoPoint {
+    fn baru(lat: f64, long: f64) -> GeoPoint {
+        GeoPoint(lat, long)
+    }
+}
+
+#[test]
+fn associated_function() {
+    let geo_point = GeoPoint::baru(-6.2000, 106.00000);
+    println!("lat {}", geo_point.0);
+    println!("long {}", geo_point.1);
+}
