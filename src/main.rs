@@ -887,3 +887,62 @@ fn associated_function() {
     println!("lat {}", geo_point.0);
     println!("long {}", geo_point.1);
 }
+
+// Enum
+
+#[derive(Debug)]
+enum Level {
+    Regular,
+    Premium,
+    Platinum,
+}
+
+#[test]
+fn enum_feature() {
+    let level = Level::Regular;
+    let _level1 = Level::Premium;
+    let _level2 = Level::Platinum;
+    println!("Level: {:?}", level);
+}
+
+// Enum Data
+#[derive(Debug)]
+enum Payment {
+    CreditCard(String),
+    DebitCard(String, String),
+    EWallet(String),
+}
+
+#[test]
+fn enum_data() {
+    let cc = Payment::CreditCard(String::from("1234567890"));
+    println!("Payment: {:?}", cc);
+    // if let statement
+    // if let statement is used to match a value against an enum
+    // how to read if let statement: if let <pattern> = <expression> { <body> }
+    // memeriksa apakah cc adalah varian CreditCard dari enum Payment
+    // jika ya, maka value akan diassign ke 'x'
+    if let Payment::CreditCard(x) = cc {
+        println!("Credit card value: {}", x);
+    }
+
+    let debit = Payment::DebitCard(String::from("BCA"), String::from("1234567890"));
+    println!("Payment: {:?}", debit);
+
+    let ewallet = Payment::EWallet(String::from("Dana"));
+    println!("Payment: {:?}", ewallet);
+}
+
+// Enum method
+
+impl Payment {
+    fn pay(&self, amount: u32) {
+        println!("Paying with {:?} amount: {}", self, amount);
+    }
+}
+
+#[test]
+fn enum_method() {
+    let cc = Payment::CreditCard(String::from("1234567890"));
+    cc.pay(30000);
+}
