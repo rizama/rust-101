@@ -508,7 +508,7 @@ fn range_expression() {
 
 // FUNCTION
 
-fn say_hello() {
+fn say_hello_() {
     println!("Hello");
 }
 
@@ -557,7 +557,7 @@ fn recursive_factorial_loop(n: u32) -> u32 {
 
 #[test]
 fn feature_function() {
-    say_hello();
+    say_hello_();
     say_hello_to("Rizky", 29);
     println!("Sum: {}", sum(1, 2));
     println!("Factorial loop: {}", factorial_loop(5));
@@ -945,4 +945,219 @@ impl Payment {
 fn enum_method() {
     let cc = Payment::CreditCard(String::from("1234567890"));
     cc.pay(30000);
+}
+
+// Pattern Matching
+
+// 1. Pattern Matching Enum
+
+#[test]
+fn pattern_matching_enum() {
+    let level1 = Level::Regular;
+    let mut test: &str = "";
+    match level1 {
+        Level::Regular => test = "Regular",
+        Level::Premium => println!("Premium level"),
+        Level::Platinum => println!("Platinum level"),
+    }
+
+    println!("Test: {}", test);
+}
+
+// 2. Destructuring Enum Data Pattern
+impl Payment {
+    fn paying(&self, number: u32) {
+        match self {
+            Payment::CreditCard(x) => println!("Paying with credit card {}, amount: {}", x, number),
+            Payment::DebitCard(bank, _x) => {
+                println!("Paying with debit card {} {}, amount: {}", bank, _x, number)
+            }
+            Payment::EWallet(_x) => println!("Paying with e-wallet, amount: {}", number), // _x is ignored
+        }
+    }
+}
+
+#[test]
+fn test_destructuring_enum_data_pattern() {
+    let cc = Payment::CreditCard(String::from("1234567890"));
+    cc.paying(30000);
+
+    let debit = Payment::DebitCard(String::from("BCA"), String::from("1234567890"));
+    debit.paying(30000);
+
+    let ewallet = Payment::EWallet(String::from("Dana"));
+    ewallet.paying(30000);
+}
+
+// 3. Pattern Matching Value
+
+#[test]
+fn pattern_matching_value() {
+    let number = 10;
+    match number {
+        1 => println!("Number is 1"),
+        2 => println!("Number is 2"),
+        _ => println!("Number is not 1 or 2"),
+    }
+
+    let name: &str = "Pratama";
+    match name {
+        "Rizky" => println!("Name is Rizky"),
+        "Sam" => println!("Name is Sam"),
+        _other => println!("Name is not Rizky or Sam"),
+    }
+}
+
+// 4. Multiple Matching
+#[test]
+fn multiple_matching() {
+    let number = 2;
+    match number {
+        1 | 2 => println!("Number is 1 or 2"),
+        _other => println!("Number is not 1 or 2"),
+    }
+}
+
+// 5. Range Matching
+#[test]
+fn range_matching() {
+    let number = 5;
+
+    // 1..=5 means number is between 1 and 5
+    match number {
+        1..=5 => println!("Number is between 1 and 5"),
+        _other => println!("Number is not between 1 and 5"),
+    }
+}
+
+// 6. Destructuring Struct Pattern
+#[test]
+fn destructuring_struct_pattern() {
+    let point = GeoPoint::baru(1.0, 0.0);
+
+    match point {
+        GeoPoint(0.0, long) => println!("long is {}", long),
+        GeoPoint(lat, 0.0) => println!("lat is {}", lat),
+        GeoPoint(lat, long) => println!("lat: {}, long: {}", lat, long),
+    }
+
+    let person = Person {
+        name: String::from("Rizky"),
+        middle_name: String::from("Sam"),
+        last_name: String::from("Pratama"),
+        age: 29,
+    };
+
+    match person {
+        // .. is used to ignore the value of the field
+        // ignore the value of middle_name, last_name
+        Person { name, age, .. } => {
+            println!("Name: {}, Age: {}", name, age);
+        }
+    }
+}
+
+// 7. Ignoring Value
+#[test]
+fn ignoring_value() {
+    let point = GeoPoint::baru(1.0, 1.0);
+
+    match point {
+        GeoPoint(lat, _) => println!("lat is {}", lat),
+    }
+}
+
+// 8. Match Expression
+#[test]
+fn match_expression() {
+    let number = 10;
+    let result = match number {
+        1 => "one",
+        2 => "two",
+        _ => "other",
+    };
+    println!("Result: {}", result);
+}
+
+// Alias
+
+type Age = u8;
+
+#[test]
+fn alias() {
+    let age: Age = 29;
+    println!("Age: {}", age);
+}
+
+// Module
+mod module_a {
+    // all code in this block will be private
+    // unless we use 'pub' keyword
+
+    pub struct User {
+        pub name: String,
+        pub age: u8,
+    }
+
+    impl User {
+        pub fn say_hello(&self, name: &str) {
+            println!("Hello {}, my name is, {}", name, self.name);
+        }
+    }
+}
+
+use module_a::User;
+
+#[test]
+fn test_module() {
+    let person = User {
+        name: String::from("Rizky"),
+        age: 29,
+    };
+    println!("Person age: {}", person.age);
+    person.say_hello("Sam");
+}
+
+// USE KEYWORD
+mod first {
+    pub fn say_hello() {
+        println!("Hello from first module");
+    }
+}
+
+mod second {
+    pub fn say_hello() {
+        println!("Hello from first module");
+    }
+}
+// use 'use' keyword to import the function from the module
+use first::say_hello;
+use second::say_hello as second_say_hello;
+
+#[test]
+fn test_use_module() {
+    say_hello();
+    second_say_hello();
+}
+
+// Module di File lain
+// filename will be module
+// as default separated file will not be included
+// These lines declare two modules, third and fourth
+mod fourth;
+mod third;
+
+// use third::say_hello as third_say_hello;
+// use fourth::say_hello as fourth_say_hello;
+// or
+// use third::*;
+// use fourth::*;
+// or
+use fourth::say_hello as fourth_say_hello;
+use third::{say_hello as third_say_hello, seconds::thirds::say_hello as third_say_hello2};
+#[test]
+fn separated_file_module() {
+    third_say_hello();
+    fourth_say_hello();
+    third_say_hello2();
 }
