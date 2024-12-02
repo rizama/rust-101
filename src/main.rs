@@ -1161,3 +1161,53 @@ fn separated_file_module() {
     fourth_say_hello();
     third_say_hello2();
 }
+
+// Trait
+
+// trait is same with interface in other language
+// trait is a collection of methods that can be used in a struct
+// trait is implemented using the impl keyword
+trait CanSayHello {
+    // default implementation
+    // default implementation is automatically implemented
+    fn hellow(&self) -> String {
+        String::from("Hello, iam default implementation")
+    }
+
+    fn say_hello(&self) -> String;
+    fn say_hello_to(&self, name: &str) -> String;
+}
+
+impl CanSayHello for Person {
+    fn say_hello(&self) -> String {
+        format!("Hello, my name is {}", self.name)
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        format!(
+            "Hello, my name is {} and I say hello to {}",
+            self.name, name
+        )
+    }
+}
+
+// trait as parameter
+fn say_hello_trait(value: &impl CanSayHello) {
+    println!("{}", value.say_hello());
+}
+
+#[test]
+fn trait_feature() {
+    let person = Person {
+        name: String::from("Rizky"),
+        middle_name: String::from("Sam"),
+        last_name: String::from("Pratama"),
+        age: 29,
+    };
+
+    say_hello_trait(&person);
+
+    println!("{}", person.say_hello());
+    println!("{}", person.say_hello_to("Noah"));
+    println!("{}", person.hellow());
+}
