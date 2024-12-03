@@ -1211,3 +1211,243 @@ fn trait_feature() {
     println!("{}", person.say_hello_to("Noah"));
     println!("{}", person.hellow());
 }
+
+// multiple trait
+trait CanSayGoodbye {
+    fn good_bye(&self) -> String;
+    fn good_bye_to(&self, name: &str) -> String;
+}
+
+impl CanSayGoodbye for Person {
+    fn good_bye(&self) -> String {
+        format!("Goodbye, my name is {}", self.name)
+    }
+
+    fn good_bye_to(&self, name: &str) -> String {
+        format!(
+            "Goodbye, my name is {} and I say goodbye to {}",
+            self.name, name
+        )
+    }
+}
+
+fn hello_and_goodbye(value: &(impl CanSayHello + CanSayGoodbye)) {
+    println!("{}", value.say_hello());
+    println!("{}", value.good_bye());
+}
+
+#[test]
+fn test_multiple_trait() {
+    let person = Person {
+        name: String::from("Rizky"),
+        middle_name: String::from("Sam"),
+        last_name: String::from("Pratama"),
+        age: 29,
+    };
+    println!("{}", person.good_bye());
+    println!("{}", person.good_bye_to("Noah"));
+
+    hello_and_goodbye(&person);
+}
+
+// Trait as return type
+struct SimplePerson {
+    name: String,
+}
+
+impl CanSayGoodbye for SimplePerson {
+    fn good_bye(&self) -> String {
+        format!("Goodbye simple person, my name is {}", self.name)
+    }
+
+    fn good_bye_to(&self, name: &str) -> String {
+        format!(
+            "Goodbye simple person, my name is {} and I say goodbye to {}",
+            self.name, name
+        )
+    }
+}
+
+impl CanSayHello for SimplePerson {
+    fn say_hello(&self) -> String {
+        format!("Hello, my name is {}", self.name)
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        format!(
+            "Hello, my name is {} and I say hello to {}",
+            self.name, name
+        )
+    }
+}
+
+fn create_person(name: String) -> impl CanSayGoodbye + CanSayHello {
+    return SimplePerson { name };
+}
+
+#[test]
+fn test_trait_as_return_type() {
+    let person = create_person(String::from("Sam"));
+    println!("{}", person.good_bye());
+    println!("{}", person.say_hello());
+}
+
+// Solve conflict method name in Trait
+struct Person2 {
+    name: String,
+    middle_name: String,
+    last_name: String,
+    age: u8,
+}
+
+// create method for Person2
+impl Person2 {
+    fn say_hello(&self, name: &str) {
+        println!(
+            "Hello Person2, my name is {} and I say hello to {}",
+            self.name, name
+        );
+    }
+}
+
+// implement Trait for Person2
+impl CanSayHello for Person2 {
+    fn say_hello(&self) -> String {
+        format!("Hello CanSayHello Person2, my name is {}", self.name)
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        format!(
+            "Hello CanSayHello Person2, my name is {} and I say hello to {}",
+            self.name, name
+        )
+    }
+}
+
+#[test]
+fn test_solve_conflict_method_name_in_trait() {
+    let person = Person2 {
+        name: String::from("Rizky"),
+        middle_name: String::from("Sam"),
+        last_name: String::from("Pratama"),
+        age: 29,
+    };
+
+    // agar tidak salah memanggail method, kita perlu menggunakan Trait name atau Struct name
+
+    // to access method to Struct, we need to use Struct name
+    Person2::say_hello(&person, "Noah");
+
+    // to access method to Trait, we need to use Trait name
+    println!("{}", CanSayHello::say_hello(&person));
+}
+
+// SUPER TRAIT
+
+trait SuperTrait: CanSayHello + CanSayGoodbye {
+    // default implementation
+    fn super_hellow(&self) {
+        println!("Hello, iam default implementation SuperTrait");
+        println!("{}", self.say_hello());
+        println!("{}", self.good_bye());
+    }
+
+    fn super_say_hello(&self) -> String;
+}
+
+struct SuperPerson {
+    name: String,
+}
+
+impl CanSayHello for SuperPerson {
+    fn say_hello(&self) -> String {
+        format!("Hello CanSayHello SuperPerson, my name is {}", self.name)
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        format!(
+            "Hello CanSayHello SuperPerson, my name is {} and I say hello to {}",
+            self.name, name
+        )
+    }
+}
+
+impl CanSayGoodbye for SuperPerson {
+    fn good_bye(&self) -> String {
+        format!("Goodbye SuperPerson, my name is {}", self.name)
+    }
+
+    fn good_bye_to(&self, name: &str) -> String {
+        format!(
+            "Goodbye SuperPerson, my name is {} and I say goodbye to {}",
+            self.name, name
+        )
+    }
+}
+
+// must implement all trait in SuperTrait
+// which is CanSayHello and CanSayGoodbye
+impl SuperTrait for SuperPerson {
+    fn super_say_hello(&self) -> String {
+        format!("Hello SuperTrait, my name is {}", self.name)
+    }
+}
+
+#[test]
+fn test_super_trait() {
+    let super_person = SuperPerson {
+        name: String::from("Rizky"),
+    };
+    println!("{}", super_person.say_hello());
+    println!("{}", super_person.good_bye());
+    println!("{}", super_person.super_say_hello());
+    super_person.super_hellow()
+}
+// GENERIC
+// In Rust, generic is a way to create a function or struct that can be used with different types
+// Generic is implemented using the <> syntax
+// Generic is used to create a function or struct that can be used with different types
+
+// in Struct
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+#[test]
+fn test_generic_struct() {
+    let integer = Point::<i32> { x: 1, y: 2 };
+    println!("Point integer: {}", integer.x);
+    println!("Point integer: {}", integer.y);
+
+    let float: Point<f64> = Point::<f64> { x: 1.1, y: 2.2 };
+    println!("Point float: {}", float.x);
+    println!("Point float: {}", float.y);
+}
+
+//  in Enum
+enum Option<T> {
+    Some(T),
+    None,
+}
+
+#[test]
+fn test_generic_enum() {
+    let some_number = Option::<i32>::Some(5);
+
+    match some_number {
+        Option::Some(number) => println!("Number is {}", number),
+        Option::None => println!("No number"),
+    }
+
+    let no_number: Option<i32> = Option::None;
+
+    match no_number {
+        Option::Some(number) => println!("Number is {}", number),
+        Option::None => println!("No number"),
+    }
+}
+
+// generic type bound
+// generic type bound is a way to specify the type of the parameter
+// generic type bound is implemented using the 'where' keyword
