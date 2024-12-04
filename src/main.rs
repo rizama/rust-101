@@ -1450,4 +1450,34 @@ fn test_generic_enum() {
 
 // generic type bound
 // generic type bound is a way to specify the type of the parameter
-// generic type bound is implemented using the 'where' keyword
+
+struct Hi<T: CanSayGoodbye> {
+    value: T,
+}
+
+#[test]
+fn test_generic_type_bound() {
+    let hi = Hi::<SimplePerson> {
+        value: SimplePerson {
+            name: String::from("Rizky"),
+        },
+    };
+
+    println!("{}", hi.value.good_bye());
+}
+
+// generic function
+// PartialOrd is a trait that is used to compare two values
+fn min<T: PartialOrd>(a: T, b: T) -> T {
+    if a < b {
+        a
+    } else {
+        b
+    }
+}
+
+#[test]
+fn test_generic_function() {
+    let result = min::<i32>(3,2);
+    println!("{}", result);
+}
