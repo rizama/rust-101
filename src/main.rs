@@ -1478,6 +1478,99 @@ fn min<T: PartialOrd>(a: T, b: T) -> T {
 
 #[test]
 fn test_generic_function() {
-    let result = min::<i32>(3,2);
+    let result = min::<i32>(3, 2);
     println!("{}", result);
+
+    let result = min(3, 2);
+    println!("{}", result);
+}
+
+// generic method
+struct NewPoint<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> NewPoint<T> {
+    fn get_x(&self) -> &T {
+        &self.x
+    }
+
+    fn get_y(&self) -> &T {
+        &self.y
+    }
+}
+
+#[test]
+fn test_generic_method() {
+    let point = NewPoint::<i32> { x: 1, y: 2 };
+    println!("{}", point.get_x());
+    println!("{}", point.get_y());
+
+    // rust can infer the type of the parameter
+    let point2 = NewPoint { x: 1.1, y: 2.2 };
+    println!("{}", point2.get_x());
+    println!("{}", point2.get_y());
+}
+
+// generic trait
+trait GetValue<T> {
+    fn get_value(&self) -> &T;
+}
+
+impl<T> GetValue<T> for NewPoint<T> {
+    fn get_value(&self) -> &T {
+        &self.x
+    }
+}
+
+#[test]
+fn test_generic_trait() {
+    let point = NewPoint { x: 1, y: 2 };
+    println!("{}", point.get_value());
+}
+
+// where clause
+// where clause is a way to specify the type of the parameter
+// where clause is used in trait
+trait NewGetValue<T>
+where
+    T: PartialOrd,
+{
+    fn get_value_new(&self) -> &T;
+}
+
+impl<T> NewGetValue<T> for NewPoint<T>
+where
+    T: PartialOrd,
+{
+    fn get_value_new(&self) -> &T {
+        &self.x
+    }
+}
+
+// or using where clause
+struct HiWithWhere<T>
+where
+    T: CanSayGoodbye + CanSayHello,
+{
+    value: T,
+}
+
+
+// Default Generic Type
+// Default Generic Type is a way to specify the type of the parameter
+// Default Generic Type is used in function
+// use = to specify the default type
+struct DefaultGenericType<T = i32> {
+    value: T,
+}
+
+#[test]
+fn test_default_generic_type() {
+    let default_generic_type = DefaultGenericType::<i32> { value: 1 };
+    println!("{}", default_generic_type.value);
+
+    let default_generic_type = DefaultGenericType { value: 1 };
+    println!("{}", default_generic_type.value);
 }
