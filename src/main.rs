@@ -1557,7 +1557,6 @@ where
     value: T,
 }
 
-
 // Default Generic Type
 // Default Generic Type is a way to specify the type of the parameter
 // Default Generic Type is used in function
@@ -1573,4 +1572,33 @@ fn test_default_generic_type() {
 
     let default_generic_type = DefaultGenericType { value: 1 };
     println!("{}", default_generic_type.value);
+}
+
+// overloadble operator
+// overloadble operator is a way to create a function with the same name but different parameters
+// overloadble operator is used in function
+// use different parameters to distinguish the function
+
+use std::ops::Add;
+
+struct Apple {
+    quantity: i32,
+}
+
+impl Add for Apple {
+    type Output = Apple;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Apple {
+            quantity: self.quantity + rhs.quantity,
+        }
+    }
+}
+
+#[test]
+fn test_overloadble_operator() {
+    let apple1 = Apple { quantity: 1 };
+    let apple2 = Apple { quantity: 2 };
+    let apple3 = apple1 + apple2;
+    println!("{}", apple3.quantity);
 }
