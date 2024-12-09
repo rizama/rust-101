@@ -1426,10 +1426,12 @@ fn test_generic_struct() {
 }
 
 //  in Enum
-enum Option<T> {
-    Some(T),
-    None,
-}
+
+// enum option builtin in rust
+// enum Option<T> {
+//     Some(T),
+//     None,
+// }
 
 #[test]
 fn test_generic_enum() {
@@ -1579,7 +1581,7 @@ fn test_default_generic_type() {
 // overloadble operator is used in function
 // use different parameters to distinguish the function
 
-use std::ops::Add;
+use std::{cmp::Ordering, ops::Add};
 
 struct Apple {
     quantity: i32,
@@ -1604,3 +1606,53 @@ fn test_overloadble_operator() {
 }
 
 // Optional Values
+// rust not have null or undefined
+// penggantinya rush memiliki Enum Option
+// None     -> nilai kosong
+// Some(T)  -> nilai tidak kosong tapi bebas tipe datanya
+
+fn double(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(x) => Some(x * 2),
+    }
+}
+
+#[test]
+fn test_enum_option() {
+    let result = double(Some(10));
+    println!("{:?}", result);
+
+    let result_none = double(None);
+    println!("{:?}", result_none);
+}
+
+// Comparing
+// Module/Crate core::cmp
+
+// PartialEq merupakan trait yang digunakan untuk melakukan perbandingan antara dua nilai
+// mengimplementasikan PartialEq ke struct Apple
+impl PartialEq for Apple {
+    fn eq(&self, other: &Self) -> bool {
+        self.quantity == other.quantity
+    }
+}
+
+// mengimplementasikan PartialOrd ke struct Apple
+impl PartialOrd for Apple {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.quantity.partial_cmp(&other.quantity)
+    }
+}
+
+// atau bisa menggunakan macro #[derive(Debug, PartialEq, PartialOrd)] pada struct Apple
+
+#[test]
+fn test_comparing() {
+    let apple1 = Apple { quantity: 1 };
+    let apple2 = Apple { quantity: 2 };
+    println!("apple1 == apple2 {}", apple1 == apple2);
+    println!("apple1 != apple2 {}", apple1 != apple2);
+    println!("apple1 >= apple2 {}", apple1 >= apple2);
+    println!("apple1 <= apple2 {}", apple1 <= apple2);
+}
