@@ -1581,7 +1581,7 @@ fn test_default_generic_type() {
 // overloadble operator is used in function
 // use different parameters to distinguish the function
 
-use std::{cmp::Ordering, ops::Add};
+use std::{cmp::Ordering, fmt::Debug, ops::Add};
 
 struct Apple {
     quantity: i32,
@@ -1655,4 +1655,95 @@ fn test_comparing() {
     println!("apple1 != apple2 {}", apple1 != apple2);
     println!("apple1 >= apple2 {}", apple1 >= apple2);
     println!("apple1 <= apple2 {}", apple1 <= apple2);
+}
+
+// String Manipulation
+#[test]
+fn test_string_manipulation() {
+    let s = String::from("Rizky Sam Pratama");
+    // let s_slice = "Sam";
+
+    println!("String: {}", s);
+    println!("String: {}", s.to_lowercase());
+    println!("String: {}", s.to_uppercase());
+    println!("String: {}", s.replace("Sam", "Pratama"));
+    println!("String: {}", s.replace("Pratama", "Ganteng"));
+    println!("String: {}", s.contains("Sam"));
+    println!("String: {}", s.contains("Rizky"));
+    println!("String: {}", s.len());
+}
+
+// Formating String
+/**
+ * Key Point:
+ * Use {} for simple, user-friendly output
+ * Use {:?} for debugging and development
+ * Use {:#?} when you need to inspect complex nested structures
+ * Custom types need to implement Display for {} to work
+ * Most types automatically implement Debug when you add #[derive(Debug)]
+ */
+#[test]
+fn test_formating_string() {
+    let person = Person {
+        name: String::from("Rizky"),
+        middle_name: String::from("Sam"),
+        last_name: String::from("Pratama"),
+        age: 29,
+    };
+
+    // println!("Person name: {}", person); // `Person` doesn't implement `std::fmt::Display` , println without format
+    // println!("Person middle name: {:}", person); // `Person` doesn't implement `std::fmt::Display` , println with format
+    // println!("Person name: {:?}", person); // `Person` implements `std::fmt::Debug`, debug not pretty format
+    
+    // Display {}
+    // tipe data primitive (string slice, number dll) -> Display
+    println!("Person name: {}", person.name); // `Person` implements `std::fmt::Debug`, debug pretty format
+    // Output: Person name: Rizky
+    
+    println!("Person name: {:}", person.name); // `Person` implements `std::fmt::Debug`, debug pretty format
+    // Output: Person name: Rizky
+
+    println!("--------------------------------");
+
+    // Debug {:?}
+    // tipe data kompleks (struct, enum, array, tuple dll) -> Debug
+    println!("Person: {:?}", person);
+    // Output: Person { name: "Rizky", middle_name: "Sam", last_name: "Pratama", age: 29 }
+
+    println!("Person: {:#?}", person);
+     // Output
+     // Person: Person {
+     //     name: "Rizky",
+     //     middle_name: "Sam",
+     //     last_name: "Pratama",
+     //     age: 29,
+     // }
+
+    let cat = Category {
+        name: String::from("Cat"),
+        description: String::from("Cat description"),
+    };
+    println!("Category: {:#?}", cat);
+     // Output
+     // Category: Category {
+     //     name: "Cat",
+     //     description: "Cat description",
+     // }
+
+}
+
+struct Category {
+    name: String,
+    description: String,
+}
+
+use std::fmt::Formatter;
+
+impl Debug for Category {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Category")
+            .field("name", &self.name)
+            .field("description", &self.description)
+            .finish()
+    }
 }
