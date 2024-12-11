@@ -1582,6 +1582,7 @@ fn test_default_generic_type() {
 // use different parameters to distinguish the function
 
 use std::{cmp::Ordering, fmt::Debug, ops::Add};
+use std::{result, string};
 
 struct Apple {
     quantity: i32,
@@ -1694,14 +1695,14 @@ fn test_formating_string() {
     // println!("Person name: {}", person); // `Person` doesn't implement `std::fmt::Display` , println without format
     // println!("Person middle name: {:}", person); // `Person` doesn't implement `std::fmt::Display` , println with format
     // println!("Person name: {:?}", person); // `Person` implements `std::fmt::Debug`, debug not pretty format
-    
+
     // Display {}
     // tipe data primitive (string slice, number dll) -> Display
     println!("Person name: {}", person.name); // `Person` implements `std::fmt::Debug`, debug pretty format
-    // Output: Person name: Rizky
-    
+                                              // Output: Person name: Rizky
+
     println!("Person name: {:}", person.name); // `Person` implements `std::fmt::Debug`, debug pretty format
-    // Output: Person name: Rizky
+                                               // Output: Person name: Rizky
 
     println!("--------------------------------");
 
@@ -1711,25 +1712,24 @@ fn test_formating_string() {
     // Output: Person { name: "Rizky", middle_name: "Sam", last_name: "Pratama", age: 29 }
 
     println!("Person: {:#?}", person);
-     // Output
-     // Person: Person {
-     //     name: "Rizky",
-     //     middle_name: "Sam",
-     //     last_name: "Pratama",
-     //     age: 29,
-     // }
+    // Output
+    // Person: Person {
+    //     name: "Rizky",
+    //     middle_name: "Sam",
+    //     last_name: "Pratama",
+    //     age: 29,
+    // }
 
     let cat = Category {
         name: String::from("Cat"),
         description: String::from("Cat description"),
     };
     println!("Category: {:#?}", cat);
-     // Output
-     // Category: Category {
-     //     name: "Cat",
-     //     description: "Cat description",
-     // }
-
+    // Output
+    // Category: Category {
+    //     name: "Cat",
+    //     description: "Cat description",
+    // }
 }
 
 struct Category {
@@ -1737,7 +1737,7 @@ struct Category {
     description: String,
 }
 
-use std::fmt::Formatter;
+use std::fmt::{Display, Formatter};
 
 impl Debug for Category {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -1746,4 +1746,84 @@ impl Debug for Category {
             .field("description", &self.description)
             .finish()
     }
+}
+
+// Closure
+// Fungsi tanpa nama
+#[test]
+fn test_closure() {
+    // |value1: i32, value2: i32| -> i32 { value1 + value2 } [closure]
+    // let sum: fn(i32, i32) -> i32 [nama variable]
+    let sum: fn(i32, i32) -> i32 = |value1: i32, value2: i32| -> i32 { value1 + value2 };
+
+    let result = sum(1, 2);
+    println!("{}", result);
+}
+
+// Closure as parameter
+fn print_with_filter(value: String, f: fn(String) -> String) {
+    let result = f(value);
+    println!("{}", result);
+}
+
+#[test]
+fn print_closure_as_params() {
+    let s = String::from("Rizky Sam Pratama");
+
+    let filter = |value: String| -> String { value.to_uppercase() };
+    print_with_filter(s, filter);
+}
+
+// Closure dari Function
+fn my_uppercase(value: String) -> String {
+    value.to_uppercase()
+}
+
+#[test]
+fn test_closure_from_function() {
+    let s = String::from("Rizky Sam Pratama");
+    print_with_filter(s, my_uppercase);
+}
+
+// Closure Scope
+// kita dapat menangkap data di scope yang sama
+// namun closure scope ini dapat membingungkan jika dipakai terlalu banyak
+#[test]
+fn test_closure_scope() {
+    let mut counter = 0;
+
+    let mut increment = || {
+        counter += 1;
+        println!("Incremented");
+    };
+
+    increment();
+    increment();
+
+    println!("Counter: {}", counter);
+}
+
+// alternatif closure scope
+// yaitu menggunakan Closure dengan struct
+
+#[derive(Debug)]
+struct Counter {
+    count: u32,
+}
+
+impl Counter {
+    fn increment(&mut self) {
+        self.count += 1;
+        println!("Incremented");
+    }
+}
+
+#[test]
+fn test_alternatif_closure_scope() {
+    let mut counter = Counter { count: 0 };
+    let mut increment = || counter.increment();
+    increment();
+    increment();
+
+    println!("Counter: {:?}", counter);
 }
