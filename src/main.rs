@@ -1581,6 +1581,7 @@ fn test_default_generic_type() {
 // overloadble operator is used in function
 // use different parameters to distinguish the function
 
+use std::collections::{LinkedList, VecDeque};
 use std::{cmp::Ordering, fmt::Debug, ops::Add};
 use std::{result, string};
 
@@ -1827,3 +1828,90 @@ fn test_alternatif_closure_scope() {
 
     println!("Counter: {:?}", counter);
 }
+
+// Collection Type
+// Collection Type adalah tipe data yang dapat menampung beberapa data sekaligus
+// Collection Type di Rust terdiri dari 3 macam yaitu:
+
+// 1. Sequence: tipe data collection yang memiliki index
+// 1.1 Vec (vector) : urutannya sesuai dengan yang kita inginkan
+// 1.1.1 Menambahkan data ke vector dilakukan dibagian belakang
+// 1.1.2 Cocok implementasi stack (tumpukan) dan Last in, First out
+// 1.1.3 Disimpan di Heap
+// 2. VecDeque (vector double ended queue)
+// 2.1 Sama seperti Vec, namun memiliki kemampuan untuk menambahkan data di awal dan akhir
+// 2.2 Cocok implementasi queue (antrian) dan First in, First out
+// 2.3 Disimpan di Heap
+// 3. LinkedList (implementasi sequence menggunakan tipe data linked list)
+// 3.1 Linkedlist efisien untuk menambahkan dan mengurangkan data, sangat cocok ketika kita butuh Sequence yang tidak terprediksi ukurannya
+// 3.2 Disimpan di Heap
+// 3.3 performa linkedlist tidak sebaik vector
+
+
+// 2. Set
+// 3. Map
+
+#[test]
+fn test_vector_collection() {
+    let mut names: Vec<String> = Vec::<String>::new();
+
+    names.push(String::from("Rizky"));
+    names.push(String::from("Sam"));
+    names.push(String::from("Pratama"));
+    names.pop();
+
+    println!("Names: {:?}", names);
+    println!("Names length: {}", names.len());
+    println!("Names first: {}", names[0]);
+    println!("Names last: {}", names[names.len() - 1]);
+
+    // harus dikirim reference/pointer agar tidak dihapus ownership nya dari variable names
+    for name in &names {
+        println!("{}", name);
+    }
+
+    println!("Names: {:?}", names);
+}
+
+#[test]
+fn test_vector_dequeue_collection() {
+    let mut names: VecDeque<String> = VecDeque::<String>::new();
+
+    names.push_front(String::from("Rizky"));
+    names.push_front(String::from("Sam"));
+    names.push_back(String::from("Pratama"));
+    // names.pop_back();
+
+    println!("Names: {:?}", names);
+    println!("Names length: {}", names.len());
+    println!("Names first: {}", names[0]);
+    println!("Names last: {}", names[names.len() - 1]);
+
+    // harus dikirim reference/pointer agar tidak dihapus ownership nya dari variable names
+    for name in &names {
+        println!("{}", name);
+    }
+
+    println!("Names: {:?}", names);
+}
+
+#[test]
+fn test_linkedlist_collection() {
+    let mut names: LinkedList<String> = LinkedList::<String>::new();
+
+    names.push_front(String::from("Rizky"));
+    names.push_front(String::from("Sam"));
+    names.push_back(String::from("Pratama"));
+    // names.pop_back();
+
+    println!("Names: {:?}", names);
+    println!("Names length: {}", names.len());
+
+    // harus dikirim reference/pointer agar tidak dihapus ownership nya dari variable names
+    for name in &names {
+        println!("{}", name);
+    }
+
+    println!("Names: {:?}", names);
+}
+
