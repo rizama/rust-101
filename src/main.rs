@@ -1915,3 +1915,4 @@ fn test_linkedlist_collection() {
     println!("Names: {:?}", names);
 }
 
+// MAP Type
