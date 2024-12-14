@@ -1581,7 +1581,7 @@ fn test_default_generic_type() {
 // overloadble operator is used in function
 // use different parameters to distinguish the function
 
-use std::collections::{BTreeMap, HashMap, LinkedList, VecDeque};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 use std::{cmp::Ordering, fmt::Debug, ops::Add};
 use std::{result, string};
 
@@ -1966,5 +1966,46 @@ fn test_btreemap() {
     // diurutkan key nya
     for entry in &my_btreemap {
         println!("{:?}", entry);
+    }
+}
+
+// SET Type
+// tipe data collection, dimana didalam data tersebut tidak ada duplikasi data
+// jika sudah ada data tersebut, maka data tersebut akan diabaikan
+// Set tidak bisa diakses dengan index
+// 1. HashSet: key tidak diurutkan + unik data
+// 2. BTreeSet: key diurutkan + unik data
+
+#[test]
+fn test_hashset() {
+    let mut my_hashset: HashSet<String> = HashSet::new();
+    my_hashset.insert(String::from("Rizky"));
+    my_hashset.insert(String::from("Sam"));
+    my_hashset.insert(String::from("Pratama"));
+    my_hashset.insert(String::from("Pratama"));
+    my_hashset.insert(String::from("Sam"));
+
+    println!("My hashset: {:#?}", my_hashset);
+
+    for name in &my_hashset {
+        println!("{}", name);
+    }
+}
+
+#[test]
+fn test_btreeset() {
+    let mut my_btreeset: BTreeSet<String> = BTreeSet::new();
+    my_btreeset.insert(String::from("Rizky"));
+    my_btreeset.insert(String::from("Sam"));
+    my_btreeset.insert(String::from("Pratama"));
+    my_btreeset.insert(String::from("Pratama"));
+    my_btreeset.insert(String::from("Sam"));
+    my_btreeset.insert(String::from("Ariel"));
+    my_btreeset.insert(String::from("1"));
+
+    println!("My btreeset: {:#?}", my_btreeset);
+
+    for name in &my_btreeset {
+        println!("{}", name);
     }
 }
