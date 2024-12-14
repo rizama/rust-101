@@ -638,6 +638,7 @@ fn function_reference() {
     let b = &mut a;
     *b = 1;
     println!("Variable b: {}", b);
+    println!("Variable a: {}", a);
 
     let mut first_name = String::from("Rizky");
     let last_name = String::from("Sam");
@@ -1583,7 +1584,7 @@ fn test_default_generic_type() {
 
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 use std::{cmp::Ordering, fmt::Debug, ops::Add};
-use std::{result, string};
+use std::{result, string, vec};
 
 struct Apple {
     quantity: i32,
@@ -2008,4 +2009,62 @@ fn test_btreeset() {
     for name in &my_btreeset {
         println!("{}", name);
     }
+}
+
+// Iterator
+// Iterator adalah tipe data collection, dimana digunakan untuk mengakses data secara efisien
+
+#[test]
+fn test_iterator() {
+    let my_array: [u8; 10] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let mut iterator = my_array.iter();
+
+    // iterator manual
+    while let Some(value) = iterator.next() {
+        println!("a {}", value);
+    }
+
+    println!("{:?}", iterator); // empty iterator, because all data has been consumed
+
+    // iterator for in but we need to create new iterator
+    // secara tidak langsung .iter() akan di panggil dalam for loop
+    for value in my_array {
+        println!("{}", value);
+    }
+}
+
+#[test]
+fn test_iterator_method() {
+    let vector: Vec<i32> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    println!("Vector: {:?}", vector);
+
+    let sum: i32 = vector.iter().sum();
+    println!("Sum: {}", sum);
+
+    let count: usize = vector.iter().count();
+    println!("Count: {}", count);
+
+    /*
+     * why we use Vec<i32> for variable doubled?
+     * The map operation is transforming the values
+     * We're creating new values (multiplying by 2)
+     * So we can specify that we want the result to be a vector of new i32 values
+     * map creates new values, so we can choose what type we want for the output
+     */
+    let doubled: Vec<i32> = vector.iter().map(|value: &i32| value * 2).collect();
+    println!("Doubled: {:?}", doubled);
+
+    println!("Vector: {:?}", vector);
+
+    /*
+     * why we use Vec<i32> for variable odd?
+     * filter just selects existing elements
+     * It doesn't transform them
+     * It keeps the original references
+     * filter just passes through existing references, so we have to keep the reference type
+     */
+    let odd: Vec<&i32> = vector.iter().filter(|x| *x % 2 != 0).collect();
+    println!("Odd: {:?}", odd);
+
+    println!("Vector: {:?}", vector);
 }
