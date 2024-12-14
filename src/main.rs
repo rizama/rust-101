@@ -1581,7 +1581,7 @@ fn test_default_generic_type() {
 // overloadble operator is used in function
 // use different parameters to distinguish the function
 
-use std::collections::{LinkedList, VecDeque};
+use std::collections::{BTreeMap, HashMap, LinkedList, VecDeque};
 use std::{cmp::Ordering, fmt::Debug, ops::Add};
 use std::{result, string};
 
@@ -1847,7 +1847,6 @@ fn test_alternatif_closure_scope() {
 // 3.2 Disimpan di Heap
 // 3.3 performa linkedlist tidak sebaik vector
 
-
 // 2. Set
 // 3. Map
 
@@ -1916,3 +1915,56 @@ fn test_linkedlist_collection() {
 }
 
 // MAP Type
+// Key - Value
+// Key harus unik
+// Key bisa berupa tipe data apapun
+// Value bisa berupa tipe data apapun
+// 1. HashMap: key tidak diurutkan (tapi lebih cepat get dan set data)
+// 2. BTreeMap: key diurutkan
+
+#[test]
+fn test_hashmap() {
+    let mut my_map: HashMap<String, String> = HashMap::new();
+
+    // add to hashmap
+    my_map.insert(String::from("name"), String::from("Sam"));
+    my_map.insert(String::from("age"), String::from("20"));
+
+    println!("My map: {:#?}", my_map);
+
+    let name = my_map.get("name"); // masih berupa options
+                                   // unwrap dipakai untuk mengambil value dari options
+
+    println!("Name: {}", name.unwrap());
+
+    for (key, value) in &my_map {
+        println!("{}: {}", key, value);
+    }
+
+    let name_2: Option<String> = None;
+
+    // unwrap kurang aman karena jika value nya None maka akan panic
+    // println!("Name: {}", name_2.unwrap());
+    println!(
+        "Name None: {}",
+        name_2.unwrap_or("No name provided".to_string())
+    );
+}
+
+#[test]
+fn test_btreemap() {
+    let mut my_btreemap: BTreeMap<String, String> = BTreeMap::new(); // key diurutkan
+    my_btreemap.insert("Name".to_string(), "Rizky".to_string());
+    my_btreemap.insert("Age".to_string(), "20".to_string());
+    my_btreemap.insert("Address".to_string(), "Jakarta".to_string());
+
+    // BTree ini isinya tuple jika di extract
+    // output:
+    // ("Address", "Jakarta")
+    // ("Age", "20")
+    // ("Name", "Rizky")
+    // diurutkan key nya
+    for entry in &my_btreemap {
+        println!("{:?}", entry);
+    }
+}
