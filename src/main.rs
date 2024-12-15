@@ -2068,3 +2068,103 @@ fn test_iterator_method() {
 
     println!("Vector: {:?}", vector);
 }
+
+// Error Handling
+// Recoverable Error
+// Unrecoverable Error
+// Tidak punya exception
+
+/*
+ * 1. Unrecoverable Error
+ * Error yang tidak bisa dipulihkan, atau artinya aplikasi akan crash / mati
+ * menggunakan macro panic!
+ * Misal saat aplikasi dinyalakan, tapi tidak ada konfigurasi koneksi ke database, tidak ada gunanya untuk meretry error ini
+ * Contoh lain ketika mengakses index array yang diluar dari kapasitasnya
+ */
+
+fn connect_database(host: Option<String>) {
+    match host {
+        Some(host) => println!("Connected to {}", host),
+        None => panic!("No database host provided"),
+    }
+}
+
+#[test]
+fn test_error_handling_unrecoverable() {
+    let host = "localhost".to_string();
+    connect_database(None);
+}
+
+/*
+ * 2. Recoverable Error
+ * Error yang bisa dipulihkan
+ * Rust menyediakan tipe data Result
+ * Result adalah tipe data yang memiliki 2 kemungkinan
+ * Result<T, E> => T: type data yang berhasil, E: type data error
+ * Misalnya kita ingin konek ke redis, jika terdapat konfigurasinya maka konek, tapi ketika tidak ada konfigurasi, maka tidak apa-apa
+ *
+ */
+
+fn connect_cache(host: Option<String>) -> Result<String, String> {
+    match host {
+        Some(host) => Ok(host),
+        None => Err("No cache host provided".to_string()),
+    }
+}
+
+#[test]
+fn test_error_handling_revocerable() {
+    let host = String::from("localhost");
+    let result = connect_cache(Some(host));
+    let result = connect_cache(None);
+
+    match result {
+        Ok(host) => println!("Connected to cache {}", host),
+        Err(err) => println!("Error: {}", err),
+    }
+}
+
+// '?' Operator
+// '?' operator digunakan untuk mengambil value dari options
+// ini untuk mempermudah kita ketika ingin mengambil value dari options Result pengecekan error
+// dengan menggunakan '?' operator, maka ketika ada error akan langsung di kembalikan
+
+fn connect_email(host: Option<String>) -> Result<String, String> {
+    match host {
+        Some(host) => Ok(host),
+        None => Err("No email host provided".to_string()),
+    }
+}
+
+fn connect_application(host: Option<String>) -> Result<String, String> {
+    // without '?' operator
+    // let connect_cache = connect_cache(host.clone());
+    // match connect_cache {
+    //     Ok(_) => {}
+    //     Err(err) => println!("Error Cache: {}", err),
+    // }
+
+    // let connect_email = connect_email(host.clone());
+    // match connect_email {
+    //     Ok(_) => {}
+    //     Err(err) => println!("Error Email: {}", err),
+    // }
+
+    // with '?' operator
+    connect_cache(host.clone())?;
+    connect_email(host.clone())?;
+
+    Ok("Connected to application".to_string())
+}
+
+#[test]
+fn test_error_handling_revocerable_with_question() {
+    let host = String::from("localhost");
+    let result = connect_application(Some(host));
+    // let result = connect_application(None);
+
+    match result {
+        Ok(host) => println!("Success Connect with message {}", host),
+        Err(err) => println!("Error: {}", err),
+    }
+}
