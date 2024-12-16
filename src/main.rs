@@ -2168,3 +2168,24 @@ fn test_error_handling_revocerable_with_question() {
         Err(err) => println!("Error: {}", err),
     }
 }
+
+
+// Lifetime
+// ref: https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html
+// tiap data / reference memiliki lifetime
+// default, lifetime ditentukan mengikuti scope variable, jadi akan aman
+// rust juga melakukan Borrow Check agar memastikan tidak ada Dangling Reference
+
+#[test]
+fn test_dangling_reference() {
+    let r: &i32;
+    {
+        let x = 10;
+        // r = &x; // dangling reference: "borrowed value does not live long enough"
+        // karena ketika inner scope berakhir, maka data akan dihapus, dan variable r tidak akan memiliki value
+    }
+    r = &10;
+    println!("R: {}", r);
+}
+
+// Lifetime di Function
