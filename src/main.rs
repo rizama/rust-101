@@ -2199,11 +2199,13 @@ fn test_dangling_reference() {
 //     }
 // }
 
-// Solving by Lifetime Anotation Syntax
+// Solving by Lifetime Anotation Syntax (Lifetime Reference)
 // menyebutkan yang mana kemungkinan akan d borrow
 // huruf nya bebas
 // lifetime annotation tidak merubah waktu alur hidup, hanya penanda utk membantu Rust Borrow Checker
 // Maka dari itu, jika ternyata alur hidup variable nya sudah selesai, maka bisa saja terjadi error Dangling Reference
+// Jadi rust bisa menentukan mana reference mana yang akan di return
+// dalam case ini, jika value1 lebih besar dari value2, maka value1 akan di return, begitupun sebaliknya
 fn longest<'a>(value1: &'a str, value2: &'a str) -> &'a str {
     if value1.len() > value2.len() {
         value1
@@ -2228,7 +2230,7 @@ fn test_lifetime_annotation2() {
 
     {
         let value2 = String::from("Sam");
-        // result = longest(value1.as_str(), value2.as_str()); // `value2` does not live long enough, 
+        // result = longest(value1.as_str(), value2.as_str()); // `value2` does not live long enough,
         // karena ketika inner scope berakhir, maka value2 akan dihapus
         // dan ketika function longest mengembalikan value2, maka akan error
 
@@ -2245,11 +2247,86 @@ fn test_lifetime_annotation2() {
         Sehingga reference ke string literal akan selalu valid, tidak peduli scope-nya berakhir
          */
         /*
-        Jadi ketika menggunakan string literal, tidak ada masalah karena datanya selalu tersedia. 
+        Jadi ketika menggunakan string literal, tidak ada masalah karena datanya selalu tersedia.
         Tapi ketika menggunakan String, kita harus memastikan bahwa data yang direferensikan masih hidup selama reference tersebut digunakan.
          */
-
     }
 
     // println!("Result: {}", result);
+}
+
+// Lifetime Annotation pada Struct
+// Lifetime annotation pada struct tidak digunakan saat membuat instance struct, tetapi kebutuhan ketika kita membutuhkan return Reference di sebuah function atau method
+struct Student<'a, 'b, 'c> {
+    first_name: &'a str,
+    middle_name: &'b str,
+    last_name: &'c str,
+}
+
+fn longest_student_name<'a, 'b, 'c>(
+    student1: &Student<'a, 'b, 'c>,
+    student2: &Student<'a, 'b, 'c>,
+) -> &'a str {
+    if student1.first_name.len() > student2.first_name.len() {
+        student1.first_name
+    } else {
+        student2.first_name
+    }
+}
+
+// Lifetime Annotation pada Method
+impl<'a, 'b, 'c> Student<'a, 'b, 'c> {
+    fn full_name(&'a self) -> String {
+        format!(
+            "{} {} {}",
+            self.first_name, self.middle_name, self.last_name
+        )
+    }
+
+    fn longest_name(&self, student: &Student<'a, 'b, 'c>) -> &'a str {
+        if self.first_name.len() > student.first_name.len() {
+            self.first_name
+        } else {
+            student.first_name
+        }
+    }
+}
+
+#[test]
+fn test_lifetime_annotation_struct() {
+    let student1: Student = Student {
+        first_name: "Rizky",
+        middle_name: "Sam",
+        last_name: "Pratama",
+    };
+    let student2: Student = Student {
+        first_name: "Sam",
+        middle_name: "Rozky",
+        last_name: "Priwimi",
+    };
+    let result = longest_student_name(&student1, &student2);
+    println!("Result: {}", result);
+
+    let result_lifetime_method = student1.longest_name(&student2);
+    println!("Result lifetime method: {}", result_lifetime_method);
+}
+
+// Lifetime Annotation dan Generic Type
+struct Teacher<'a, T>
+where
+    T: Ord,
+{
+    id: T,
+    name: &'a str,
+}
+
+#[test]
+fn test_lifetime_annotation_generic_struct() {
+    let teacher: Teacher<i32> = Teacher {
+        id: 1,
+        name: "Rizky",
+    };
+
+    println!("Teacher id: {}", teacher.id);
+    println!("Teacher name: {}", teacher.name);
 }
