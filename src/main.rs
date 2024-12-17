@@ -2169,7 +2169,6 @@ fn test_error_handling_revocerable_with_question() {
     }
 }
 
-
 // Lifetime
 // ref: https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html
 // tiap data / reference memiliki lifetime
@@ -2189,3 +2188,68 @@ fn test_dangling_reference() {
 }
 
 // Lifetime di Function
+// lifetime di function akan membingungkan ketika terdapat 2 parameter reference dan mengembalikan reference juga
+// Rust akan bingung untuk memilih reference mana yang akan di return
+// fungsi ini akan error ketika compile
+// fn longest(value1: &str, value2: &str) -> &str { // missing lifetime specifier, this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `value1` or `value2`
+//     if value1.len() > value2.len() {
+//         value1
+//     } else {
+//         value2
+//     }
+// }
+
+// Solving by Lifetime Anotation Syntax
+// menyebutkan yang mana kemungkinan akan d borrow
+// huruf nya bebas
+// lifetime annotation tidak merubah waktu alur hidup, hanya penanda utk membantu Rust Borrow Checker
+// Maka dari itu, jika ternyata alur hidup variable nya sudah selesai, maka bisa saja terjadi error Dangling Reference
+fn longest<'a>(value1: &'a str, value2: &'a str) -> &'a str {
+    if value1.len() > value2.len() {
+        value1
+    } else {
+        value2
+    }
+}
+
+#[test]
+fn test_lifetime_annotation() {
+    let value1 = "Rizky";
+    let value2 = "Sam";
+    let result = longest(value1, value2);
+    println!("Result: {}", result);
+}
+
+// Contoh dangling reference pada lifetime annotation
+#[test]
+fn test_lifetime_annotation2() {
+    let value1 = String::from("Rizky");
+    // let result;
+
+    {
+        let value2 = String::from("Sam");
+        // result = longest(value1.as_str(), value2.as_str()); // `value2` does not live long enough, 
+        // karena ketika inner scope berakhir, maka value2 akan dihapus
+        // dan ketika function longest mengembalikan value2, maka akan error
+
+        // kenapa pakai String?
+        /*
+        String adalah tipe yang memiliki ownership (owned type)
+        Ketika kita menggunakan value2.as_str(), kita membuat reference ke data yang dimiliki oleh value2
+        Saat scope berakhir, value2 akan di-drop (dihapus dari memori)
+        Jika longest function mengembalikan reference ke value2, reference tersebut menjadi tidak valid (dangling reference) karena data yang direferensikan sudah dihapus
+         */
+        /*
+        String literal (&str) disimpan dalam binary program (static memory)
+        String literal memiliki lifetime 'static, yang berarti dia hidup sepanjang program berjalan
+        Sehingga reference ke string literal akan selalu valid, tidak peduli scope-nya berakhir
+         */
+        /*
+        Jadi ketika menggunakan string literal, tidak ada masalah karena datanya selalu tersedia. 
+        Tapi ketika menggunakan String, kita harus memastikan bahwa data yang direferensikan masih hidup selama reference tersebut digunakan.
+         */
+
+    }
+
+    // println!("Result: {}", result);
+}
