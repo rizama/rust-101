@@ -2330,3 +2330,45 @@ fn test_lifetime_annotation_generic_struct() {
     println!("Teacher id: {}", teacher.id);
     println!("Teacher name: {}", teacher.name);
 }
+
+// Attribute
+// Cara menambahkan metadata (informasi) ke kode
+// dengan cara menambahkan tanda `#[attribute]`
+// disebut lain Decorator
+// ref: https://doc.rust-lang.org/reference/attributes.html
+
+// Derive Attribute
+// Salah satu attribute yang sering digunakan
+// Implementasi Trait secara otomatis
+#[derive(Debug, PartialEq, PartialOrd)]
+struct Company {
+    name: String,
+    location: String,
+    website: String,
+}
+
+#[test]
+fn test_attribute_derive() {
+    let company = Company {
+        name: String::from("Rizky"),
+        location: String::from("Jakarta"),
+        website: String::from("rizky.com"),
+    };
+
+    let company2 = Company {
+        name: String::from("Rizky"),
+        location: String::from("Jakarta"),
+        website: String::from("rizky.com"),
+    };
+
+    println!("Company name: {:?}", company);
+
+    let result = company == company2;
+    println!("Result: {}", result);
+
+    let result = company > company2;
+    println!("Result: {}", result);
+}
+
+// Melihat hasil derive (kode implementasi otomatis oleh derive attribute)
+// menggunakan plugin cargon-expand 
