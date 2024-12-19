@@ -2371,4 +2371,56 @@ fn test_attribute_derive() {
 }
 
 // Melihat hasil derive (kode implementasi otomatis oleh derive attribute)
-// menggunakan plugin cargon-expand 
+// menggunakan plugin cargon-expand
+
+// SMART POINTER
+// Pointer adalah konsep yang umum dimana sebuah variable berisi alamat lokasi data di memory (penunjuk ke lokasi data)
+// di Rust, reference adalah pointer
+// Smart Pointer adalah tipe data pointer namun memiliki metadata (informasi tambahan)
+// di Rust menggunakan konsep Ownership (pemiliki) , dan Borrowing (meminjam)
+// Smart Pointer merupakan pemilik dari data yang tunjuk
+// Menggunakan Box<T> , mengizinkan kita membuat data di Heap, sedangkan Pointernya di Stack
+// Keuntungannya? data tidak akan di copy ketika dikirim ke function dll
+
+// Box akan berguna ketika kita menemui tipe data yang Rekursif
+// Misal kita punya tipe data Category, dimana di dalamnya bisa terdapat Category
+// lagi. Kita sering melihat jenis dataÄéPertänircontohnya di Toko Online
+
+#[test]
+fn test_smart_pointer() {
+    let value = Box::new(10);
+    println!("Value: {}", value);
+    display_box(*value); // '*' digunakan untuk mengakses ke data asli. Bisa mengirim ke function yang parameternya bukan reference
+    display_box_reference(&value); // mengirimkan reference
+}
+
+fn display_box(value: i32) {
+    println!("Value: {}", value);
+}
+
+fn display_box_reference(value: &i32) {
+    println!("Value: {}", value);
+}
+
+#[derive(Debug)]
+enum ProductCategory {
+    // Of(String, ProductCategory), // ini akan error, recursive without indirection
+    Of(String, Box<ProductCategory>),
+    End,
+}
+
+#[test]
+fn test_box_recursive() {
+    let category = ProductCategory::Of(
+        "Laptop".to_string(),
+        Box::new(ProductCategory::Of(
+            "Apple".to_string(),
+            Box::new(ProductCategory::Of(
+                "Mac".to_string(),
+                Box::new(ProductCategory::End),
+            )),
+        )),
+    );
+
+    println!("Category: {:?}", category);
+}
