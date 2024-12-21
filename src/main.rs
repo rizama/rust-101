@@ -2434,6 +2434,7 @@ fn test_dereference() {
     let value1 = Box::new(10);
     let value2 = Box::new(20);
 
+    // result
     let result = *value1 * *value2;
     println!("{}", result);
 }
