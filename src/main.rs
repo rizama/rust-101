@@ -2438,3 +2438,43 @@ fn test_dereference() {
     let result = *value1 * *value2;
     println!("{}", result);
 }
+
+
+// Direference Trait Struct
+
+struct MyValue<T> {
+    nilai: T,
+}
+
+use std::ops::Deref;
+
+impl<T> Deref for MyValue<T> {
+    type Target = T;
+
+    fn deref(&self) -> &self::Target {
+        &self.nilai
+    }
+}
+
+#[test]
+fn test_dereference_struct(){
+    let value = MyValue {nilai: 10};
+    let real_value = *value;
+
+    println!("Nilai {}", real_value);
+}
+
+
+// Deref untuk Parameter
+fn say_hello_reference(name: &String) {
+    println!("Nama: {}", name);
+}
+
+#[test]
+fn test_deref_reference() {
+    let paliu = MyValue { nama: "SAM".to_string() };
+
+    say_hello_reference(&paliu);
+    // karena MyValue itu memiliki trait 'deref', maka bisa langsung diparsing as Reference
+    // dan variable 'paliu'ini akan langsung mengambil nilai dari 'value'
+}
