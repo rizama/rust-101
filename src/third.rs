@@ -1,5 +1,5 @@
 pub fn say_hello() {
-    println!("Hello from third module");
+    println!("Hello from third modules");
 }
 
 pub mod seconds {
