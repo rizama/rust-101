@@ -2425,7 +2425,6 @@ fn test_box_recursive() {
     println!("Category: {:?}", category);
 }
 
-
 // Dereferences
 // adalah mengakses langsung ke value nya dari sebuah reference
 // untuk melakukan dereference, bisa menggunakan operator * (bintang)
@@ -2439,7 +2438,6 @@ fn test_dereference() {
     println!("{}", result);
 }
 
-
 // Direference Trait Struct
 
 struct MyValue<T> {
@@ -2451,19 +2449,18 @@ use std::ops::Deref;
 impl<T> Deref for MyValue<T> {
     type Target = T;
 
-    fn deref(&self) -> &self::Target {
+    fn deref(&self) -> &Self::Target {
         &self.nilai
     }
 }
 
 #[test]
-fn test_dereference_struct(){
-    let value = MyValue {nilai: 10};
+fn test_dereference_struct() {
+    let value = MyValue { nilai: 10 };
     let real_value = *value;
 
     println!("Nilai {}", real_value);
 }
-
 
 // Deref untuk Parameter
 fn say_hello_reference(name: &String) {
@@ -2472,9 +2469,35 @@ fn say_hello_reference(name: &String) {
 
 #[test]
 fn test_deref_reference() {
-    let paliu = MyValue { nama: "SAM".to_string() };
+    let paliu = MyValue {
+        nilai: "SAM".to_string(),
+    };
 
     say_hello_reference(&paliu);
     // karena MyValue itu memiliki trait 'deref', maka bisa langsung diparsing as Reference
     // dan variable 'paliu'ini akan langsung mengambil nilai dari 'value'
+}
+
+// CleanUp
+
+// Drop Trait
+struct Book {
+    title: String,
+}
+
+impl Drop for Book {
+    fn drop(&mut self) {
+        println!("Book '{}' telah dihapus dari memory.", self.title);
+    }
+}
+
+#[test]
+fn test_drop_trait() {
+    let book = Book {
+        title: "Rust".to_string(),
+    };
+
+    println!("Book: {}", book.title);
+
+    // book.drop(); // error, tidak bisa langsung drop
 }
