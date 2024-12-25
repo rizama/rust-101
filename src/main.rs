@@ -2501,3 +2501,6 @@ fn test_drop_trait() {
 
     // book.drop(); // error, tidak bisa langsung drop
 }
+
+
+// Multiple Ownership
