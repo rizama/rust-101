@@ -2502,5 +2502,39 @@ fn test_drop_trait() {
     // book.drop(); // error, tidak bisa langsung drop
 }
 
-
 // Multiple Ownership
+// menggunakan Rc<T> (Reference Counting)
+// ref: https://doc.rust-lang.org/std/rc/struct.Rc.html
+// Termasuk Smart Pointer
+
+use std::rc::Rc;
+
+enum Brand {
+    Of(String, Rc<Brand>),
+    End,
+}
+
+#[test]
+fn test_multiple_ownership() {
+    // let apple = ProductCategory::Of("Apple".to_string(), Box::new(ProductCategory::End));
+    // let laptop = ProductCategory::Of("Laptop".to_string(), Box::new(apple));
+    // let smartphone = ProductCategory::Of("Phone".to_string(), Box::new(apple)); // error, karena ada 2 ownership
+
+    let apple: Rc<Brand> = Rc::new(Brand::Of("Apple".to_string(), Rc::new(Brand::End)));
+    println!("Count {}", Rc::strong_count(&apple));
+    let laptop: Brand = Brand::Of("Laptop".to_string(), Rc::clone(&apple));
+    println!("Count {}", Rc::strong_count(&apple));
+    let smartphone: Brand = Brand::Of("Phone".to_string(), Rc::clone(&apple));
+    println!("Count {}", Rc::strong_count(&apple));
+
+
+    {
+        let watch: Brand = Brand::Of("Watch".to_string(), Rc::clone(&apple));
+        println!("Count {}", Rc::strong_count(&apple));
+    }
+
+    println!("Count {}", Rc::strong_count(&apple));
+
+    // println!("Laptop: {:?}", laptop);
+    // println!("Smartphone: {:?}", smartphone);
+}
