@@ -2538,3 +2538,8 @@ fn test_multiple_ownership() {
     // println!("Laptop: {:?}", laptop);
     // println!("Smartphone: {:?}", smartphone);
 }
+
+
+// Interior Mutability
+// Design Pattern dalam rust yang memperbolehkan kita mengubah data walaupun ada reference yang immutable terhadap data tersebut
+// bisa menggunakan type RefCell<T>
