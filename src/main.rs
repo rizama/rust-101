@@ -2527,7 +2527,6 @@ fn test_multiple_ownership() {
     let smartphone: Brand = Brand::Of("Phone".to_string(), Rc::clone(&apple));
     println!("Count {}", Rc::strong_count(&apple));
 
-
     {
         let watch: Brand = Brand::Of("Watch".to_string(), Rc::clone(&apple));
         println!("Count {}", Rc::strong_count(&apple));
@@ -2539,7 +2538,58 @@ fn test_multiple_ownership() {
     // println!("Smartphone: {:?}", smartphone);
 }
 
-
 // Interior Mutability
 // Design Pattern dalam rust yang memperbolehkan kita mengubah data walaupun ada reference yang immutable terhadap data tersebut
 // bisa menggunakan type RefCell<T>
+
+use std::cell::{RefCell, RefMut};
+
+#[derive(Debug)]
+struct Seller {
+    name: RefCell<String>,
+    active: RefCell<bool>,
+}
+
+#[test]
+fn test_interior_mutability() {
+    let seller = Seller {
+        name: RefCell::new("Sam".to_string()),
+        active: RefCell::new(true),
+    };
+
+    {
+        let mut result: RefMut<String> = seller.name.borrow_mut(); // mengambil mutable reference
+        *result = "Rizky".to_string();
+    }
+
+    println!("Seller: {:#?}", seller);
+}
+
+// Static
+// sama sperti Constant
+// menggunakan keyword 'static'
+// perbedaan dengan Constant adalah Static masih bisa kita ubah value nya
+// Namun karena bisa di akses oleh siapapun, maka tidak akan aman jika dijadikan mutable
+// Oleh karena itu untuk mengubah value Static, harus menggunakan unsafe block atau unsafe function
+
+static MAX_POINTS: u32 = 1000;
+
+#[test]
+fn test_static() {
+    println!("MAX_POINTS: {}", MAX_POINTS);
+}
+
+static mut COUNTER: u32 = 0;
+
+unsafe fn increment() {
+    COUNTER += 1;
+}
+
+#[test]
+fn test_unsafe_function() {
+    unsafe {
+        increment();
+        COUNTER += 1;
+        println!("COUNTER: {}", COUNTER);
+    }
+}
