@@ -2593,3 +2593,49 @@ fn test_unsafe_function() {
         println!("COUNTER: {}", COUNTER);
     }
 }
+
+// MACRO
+
+macro_rules! hi {
+    () => {
+        println!("Hi!");
+    };
+
+    ($name: expr) => {
+        println!("Hi, {}!", $name);
+    };
+}
+
+#[test]
+fn test_macro() {
+    hi!();
+    hi!("Eko");
+    hi! {
+        "SAM"
+    }
+}
+
+// Macro Repetition
+// menggunakan $()
+// * artinya parameter bisa diisi sebanyak apapun
+// + artinya parameter bisa diisi sebanyak 1 atau lebih
+// ? artinya parameter bisa diisi sebanyak 0 atau 1
+// {} artinya parameter bisa diisi sebanyak 0 atau lebih
+
+macro_rules! iterate {
+    ($array: expr) => {{
+        for item in $array {
+            println!("{}", item);
+        }
+    }};
+
+    ($($item: expr),*) => {
+        $(println!("{}", $item);)*
+    };
+}
+
+#[test]
+fn test_macro_repetition() {
+    iterate!(["Eko", "Kurniawan", "Khannedy"]);
+    iterate!("Rizky", "Sam", "Pratama");
+}
