@@ -1,30 +1,31 @@
 // ref: https://docs.google.com/presentation/d/1Z3u_470twXmqxo9YmpTYHYYae8lKwVnb0czvXvdTn4I/edit
 
+mod variable;
+mod function;
+
 fn main() {
-    println!("Hello, world!");
-
-    println!("Result: {}", add(1, 2));
+    println!("Hello, world! I am Main File");
 }
 
-fn add(a: i32, b: i32) -> i32 {
-    a + b
-}
+// fn add(a: i32, b: i32) -> i32 {
+//     a + b
+// }
 
-#[test]
-fn hello_test() {
-    println!("Hello, world test!");
-}
+// #[test]
+// fn hello_test() {
+//     println!("Hello, world test!");
+// }
 
-#[test]
-fn test_variable() {
-    let a: i32 = -1;
-    let b: i32 = 2;
-    let mut name = "Rizky";
-    println!("Name: {}", name);
-    name = "Sam";
-    assert_ne!(a, b);
-    println!("Name: {}", name);
-}
+// #[test]
+// fn test_variable() {
+//     let a: i32 = -1;
+//     let b: i32 = 2;
+//     let mut name = "Rizky";
+//     println!("Name: {}", name);
+//     name = "Sam";
+//     assert_ne!(a, b);
+//     println!("Name: {}", name);
+// }
 
 #[test]
 fn demonstrate_shadowing() {
