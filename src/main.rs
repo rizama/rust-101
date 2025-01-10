@@ -5,6 +5,7 @@ mod function;
 mod shadowing;
 mod scalar_types;
 mod compound_types;
+mod scope_block;
 
 fn main() {
     println!("Hello, world! I am Main File");
@@ -253,19 +254,19 @@ fn main() {
 
 // SCOPE AND BLOCKS
 
-#[test]
-fn variable_scope() {
-    println!("Maximum number: {}", MAXIMUM_NUMBER);
+// #[test]
+// fn variable_scope() {
+//     println!("Maximum number: {}", MAXIMUM_NUMBER);
 
-    let name = "Sam";
-    {
-        println!("Outer Name print in inner scope: {}", name);
-        let last_name = "Pratama";
-        println!("Variable inner scope: {}", last_name);
-    }
-    println!("Name: {}", name);
-    // println!("Variable scope: {}", last_name); // this will cause an error
-}
+//     let name = "Sam";
+//     {
+//         println!("Outer Name print in inner scope: {}", name);
+//         let last_name = "Pratama";
+//         println!("Variable inner scope: {}", last_name);
+//     }
+//     println!("Name: {}", name);
+//     // println!("Variable scope: {}", last_name); // this will cause an error
+// }
 
 // Memory Allocation
 // Stack and Heap
