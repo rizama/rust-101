@@ -1,3 +1,4 @@
+const MAXIMUM_NUMBER: i32 = 1000;
 #[test]
 fn variable_scope() {
     println!("Maximum number: {}", MAXIMUM_NUMBER);
